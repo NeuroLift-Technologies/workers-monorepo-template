@@ -11,7 +11,7 @@ export const checkCmd = new Command('check')
 
 	.option('-r, --root', 'Run checks from root of repo. Defaults to cwd', false)
 	.option('-d, --deps', 'Check for dependency issues with Syncpack')
-	.option('-l, --lint', 'Check for eslint issues')
+	.option('-l, --lint', 'Check for oxlint issues')
 	.option('-t, --types', 'Check for TypeScript issues')
 	.option(
 		'-f, --format',
@@ -38,10 +38,7 @@ export const checkCmd = new Command('check')
 		const runFromRoot = cwd === repoRoot
 		const cwdName = path.basename(cwd)
 
-		const turboFlags = [
-			// use all available CPU cores
-			'--concurrency=100%',
-		] satisfies string[]
+		const turboFlags: string[] = []
 
 		if (useContinue) {
 			turboFlags.push('--continue')
@@ -49,11 +46,12 @@ export const checkCmd = new Command('check')
 
 		const checks = {
 			deps: ['syncpack', 'lint'],
-			// eslint can be run from anywhere and it'll automatically only lint the current dir and children
-			lint: ['run-eslint'],
-			types: ['turbo', turboFlags, 'check:types'].flat(),
+			// oxlint can be run from anywhere and it'll automatically only lint the current dir and children
+			lint: ['run-oxlint'],
+			types: ['turbo', ...turboFlags, 'check:types'],
 			format: ['prettier', '.', '--cache', '--check', '--log-level=warn'],
 			formatShell: ['runx', 'shfmt', 'check', '--skip-if-unavailable'],
+			workersTypes: ['turbo', ...turboFlags, 'check:workers-types'],
 		} as const satisfies { [key: string]: string[] }
 
 		type TableRow = [string, string, string, string]
@@ -146,6 +144,16 @@ export const checkCmd = new Command('check')
 					'Root',
 				] satisfies TableRow
 			)
+
+			const workersTypesExitCode = await $({
+				cwd: repoRoot, // Must be run from root
+			})`${checks.workersTypes}`.exitCode
+			table.push([
+				'workers types',
+				checks.workersTypes.join(' '),
+				getAndCheckOutcome({ exitCode: workersTypesExitCode }),
+				'Root',
+			] satisfies TableRow)
 		}
 
 		echo(table.toString())

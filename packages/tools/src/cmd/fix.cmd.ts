@@ -9,7 +9,7 @@ export const fixCmd = new Command('fix')
 
 	.option('-r, --root', 'Run fixes from root of repo. Defaults to cwd', false)
 	.option('-d, --deps', 'Fix dependency versions with syncpack')
-	.option('-l, --lint', 'Fix eslint issues')
+	.option('-l, --lint', 'Fix oxlint issues')
 	.option('-f, --format', 'Format code with prettier')
 	.option(
 		'-w, --workers-types',
@@ -33,15 +33,11 @@ export const fixCmd = new Command('fix')
 		const cwd = process.cwd()
 		const runFromRoot = cwd === repoRoot
 		const cwdName = path.basename(cwd)
-		const turboFlags = [
-			// use all available CPU cores
-			'--concurrency=100%',
-		] satisfies string[]
 
 		const fixes = {
 			deps: ['run-fix-deps'],
-			lint: ['FIX_ESLINT=1', 'turbo', turboFlags, 'check:lint'].flat(),
-			workersTypes: ['turbo', turboFlags, 'fix:workers-types'].flat(),
+			lint: ['run-oxlint', '--fix'],
+			workersTypes: ['turbo', 'fix:workers-types'],
 			format: ['prettier', '.', '--cache', '--write', '--log-level=warn'],
 			formatShell: ['runx', 'shfmt', 'fix', '--skip-if-unavailable'],
 		} as const satisfies { [key: string]: string[] }

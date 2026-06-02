@@ -3,20 +3,19 @@
 	"version": "0.1.0",
 	"private": true,
 	"sideEffects": false,
-	"type": "commonjs",
+	"type": "module",
 	"scripts": {
-		"check:lint": "run-eslint",
+		"check:lint": "run-oxlint",
 		"check:types": "run-tsc",
 		"test": "run-vitest"
 	},
 	"dependencies": {
-		"@turbo/gen": "2.5.8",
-		"slugify": "1.6.6",
-		"zod": "4.1.12",
+		"@turbo/gen": "2.8.20",
+		"slugify": "1.6.8",
+		"zod": "4.3.6",
 		"zx": "8.8.5"
 	},
 	"devDependencies": {
-		"@repo/eslint-config": "workspace:*",
 		"@repo/tools": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"vitest": "4.1.0"

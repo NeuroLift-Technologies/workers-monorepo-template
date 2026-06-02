@@ -8,7 +8,7 @@
 		"enabled": false,
 		"signature": true
 	},
-	"ui": "tui",
+	"ui": "stream",
 	"tasks": {
 		"topo": {
 			"dependsOn": ["^topo"]
@@ -45,7 +45,7 @@
 			"outputLogs": "new-only"
 		},
 		"check": {
-			"dependsOn": ["check:types", "check:lint", "topo"],
+			"dependsOn": ["check:types", "check:workers-types", "check:lint", "topo"],
 			"outputLogs": "new-only"
 		},
 		"//#test:ci": {
@@ -66,6 +66,7 @@
 				"//#check:format",
 				"//#check:deps",
 				"check:types",
+				"check:workers-types",
 				"//#check:lint:all",
 				"//#test:ci",
 				"test:ci",
@@ -82,20 +83,22 @@
 		},
 		"check:lint": {
 			"dependsOn": ["build", "topo"],
-			"outputLogs": "new-only",
-			"env": ["FIX_ESLINT"]
+			"outputLogs": "new-only"
+		},
+		"check:workers-types": {
+			"dependsOn": ["build", "topo"],
+			"outputLogs": "new-only"
 		},
 		"//#check:lint:all": {
-			"outputLogs": "new-only",
-			"outputs": ["node_modules/.cache/.eslintcache"],
-			"env": ["FIX_ESLINT"]
+			"outputLogs": "new-only"
 		},
 		"//#check:format": {
 			"dependsOn": [],
 			"outputLogs": "new-only"
 		},
 		"fix:workers-types": {
-			"outputs": ["worker-configuration.d.ts", "topo"],
+			"dependsOn": ["topo"],
+			"outputs": ["worker-configuration.d.ts"],
 			"outputLogs": "new-only"
 		},
 		"//#build": {
