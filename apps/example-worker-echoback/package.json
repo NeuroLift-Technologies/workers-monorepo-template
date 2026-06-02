@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@repo/hono-helpers": "workspace:*",
-		"hono": "4.12.9",
+		"hono": "4.12.18",
 		"workers-tagged-logger": "1.0.0"
 	},
 	"devDependencies": {
